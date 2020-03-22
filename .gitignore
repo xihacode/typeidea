@@ -1,0 +1,7 @@
+*.pyc
+*. swp
+*. sqlite3
+__pycache__/
+venv/
+*.sqlite3
+.DS_Store
