@@ -37,6 +37,7 @@ class CategoryAdmin(admin.ModelAdmin):
         obj.owner = request.user
         return super(CategoryAdmin, self).save_model(request, obj, form, change)
 
+    # 控制权限
     def get_queryset(self, request):
         qs = super(CategoryAdmin, self).get_queryset(request)
         return qs.filter(owner=request.user)
