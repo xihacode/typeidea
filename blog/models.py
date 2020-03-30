@@ -22,6 +22,24 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_navs(cls):
+        categories = cls.objects.filter(status=Category.STATUS_NORMAL)
+        """下面两行会加深IO操作，可以优化 用if判断就好"""
+        # nav_categories = categories.filter(is_nav=True)
+        # normal_categories = categories.filter(is_nav=False)
+        nav_categories = []
+        normal_categories = []
+        for cate in categories:
+            if cate.is_nav:
+                nav_categories.append(cate)
+            else:
+                normal_categories.append(cate)
+        return {
+            'navs': nav_categories,
+            'categories': normal_categories,
+        }
+
 
 class Tag(models.Model):
     STATUS_NORMAL = 1
@@ -82,7 +100,7 @@ class Post(models.Model):
     @staticmethod
     def get_by_category(category_id):
         try:
-            category = Category.objects.get(category_id=category_id)
+            category = Category.objects.get(id=category_id)
         except Category.DoesNotExist:
             category = None
             post_list = []
@@ -90,7 +108,22 @@ class Post(models.Model):
             post_list = category.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
         return post_list, category
 
-    @staticmethod
+    @classmethod
     def latest_post(cls):
         queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
         return queryset
+
+
+'''
+default_related_name
+Options.default_related_name
+The name that will be used by default for the relation from a related object back to this one.
+ The default is <model_name>_set.
+
+This option also sets related_query_name.
+
+As the reverse name for a field should be unique, be careful if you intend to subclass your model.
+ To work around name collisions, part of the name should contain '%(app_label)s' and '%(model_name)s',
+  which are replaced respectively by the name of the application the model is in, and the name of the model,
+   both lowercased. See the paragraph on related names for abstract models.
+'''
