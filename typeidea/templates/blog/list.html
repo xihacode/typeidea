@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>post_list</title>
-</head>
-<body>
-{% if tag %}
-    标签页: {{ tag.name }}
-{% endif %}
-{% if category %}
-    分类页:{{ category.name }}
-{% endif %}
-<hr>
-<p>
+{% extends "./base.html" %}
+{% block title %}
+    {% if tag %}
+        标签页: {{ tag.name }}
+    {% endif %}
+    {% if category %}
+        分类页:{{ category.name }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
     <ul>
         {% for post in post_list %}
             <li>
@@ -21,18 +17,22 @@
                     <span>作者：{{ post.owner.username }}</span>
                     <span>分类：{{ post.category.name }}</span>
                 </div>
-            <p> {{ post.desc }}</p>
+                <p> {{ post.desc }}</p>
             </li>
         {% endfor %}
-</ul>
-</p>
-
-<div>侧边栏展示：
-    {% for sidebar in sidebars %}
-        <h4>{{ sidebar.title }}</h4>
-        {{ sidebar.content }}
-    {% endfor %}
-
-</div>
-</body>
-</html>
+    </ul>
+    <div class="paginator">
+        {% if page_obj %}
+            <span class="page-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+                <!--<a href="?page = {{ page_obj.previous_page_number }}">上一页</a> 注意这和上面一行不一样的 等号之间不能有空格#}-->
+            {% endif %}
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                {% if page_obj.has_next %}
+                    <a href="/?page={{ page_obj.next_page_number }}">下一页</a>
+                {% endif %}
+             </span>
+        {% endif %}
+    </div>
+{% endblock %}
