@@ -26,7 +26,8 @@
             <span class="page-links">
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
-                <!--<a href="?page = {{ page_obj.previous_page_number }}">上一页</a> 注意这和上面一行不一样的 等号之间不能有空格#}-->
+                <!--<a href="?page = {{ page_obj.previous_page_number }}">上一页</a> 注意这和上面一行不一样的
+                等号之间不能有空格 -->
             {% endif %}
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                 {% if page_obj.has_next %}
