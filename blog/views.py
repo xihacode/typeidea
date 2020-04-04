@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-
+from django.db.models import Q
 from .models import Tag, Post, Category
 from config.models import SideBar
 from django.views.generic import ListView, DetailView
@@ -118,3 +118,27 @@ def post_detail(request, post_id):
     return render(request, 'blog/detail.html', context=context)
     
 """
+
+
+class SearchView(IndexView):
+    def get_context_data(self):
+        context = super().get_context_data()
+        context.update({
+            'keyword': self.request.GET.get('keyword', '')
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        if not keyword:
+            return queryset
+        return queryset.filter(Q(title=keyword) | Q(desc=keyword))
+
+
+class AuthorView(IndexView):
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author_id = self.kwargs.get('owner_id')
+        return queryset.filter(owner_id=author_id)
